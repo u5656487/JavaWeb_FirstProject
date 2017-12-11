@@ -1,0 +1,125 @@
+删除
+	物理删除：数据库真正的删除
+	逻辑删除：数据库没有删除只是修改状态
+	
+事务
+	原子性
+	一致性
+	隔离性
+	持久性
+	
+java中使用事务
+	1.关闭自动提交模式
+		con.setAutoCommit(false);
+	2.如果没有异常提交事务
+		//提交事务
+		con.commit();
+	3.在catch中进行回滚操作
+		con.rollback();
+		
+数据库连接
+	访问前需要先获取连接
+	每次操作结束后，要释放资源
+	频繁的连接导致系统的安全性和稳定性差
+		
+连接池和数据源
+	连接池：
+		数据库连接的集合（释放资源时，是逻辑释放）
+		当用户需要连接数据库时由连接池分配空闲的连接资源
+	数据源：数据库连接信息对象
+	JNDI（java命名服务）：java通过名字去访问对象的服务
+	
+JavaBean - 实体类 - 数据库表对应类：数据载体
+
+<jsp:useBean>：实例化类
+<jsp:useBean id="name" class="package.class">
+	
+<iframe src=""></iframe>:里面的内容不能被搜索引擎搜索到
+
+include：包含页面，里面的内容可以被搜索引擎搜索到
+静态包含：
+	<%@include%>，
+	<%@ include file="/include/heade.jsp" %>
+	先包含（在编译期间将页面包含进来）再运行
+	只能包含body中的内容
+	
+动态包含：
+	<jsp:include>，
+	<jsp:include page="/include/heade.jsp"></jsp:include>
+	先运行再包含
+	可以包含完整的页面
+
+重定向：
+	a标签
+	location.href
+	form的action
+	response.sendRedirect("b.jsp");
+转发：
+	request.getRequestDispatcher("b.jsp").forward(request, response);
+	<jsp:forward page="b.jsp"></jsp:forward>
+
+批量新增
+	1.遍历参数集合
+		//遍历要添加的用户
+		for (SysUser u : uls) {
+			pst.setString(1, u.getUserName());
+			pst.setString(2, u.getPassword());
+			pst.setString(3, u.getNickName());
+			pst.setInt(4, u.getStatus());
+			//将参数添加到批处理中
+			pst.addBatch();
+		}
+	2.将参数设置完后添加到批处理中
+	3.执行批处理
+		//执行批处理
+		pst.executeBatch();
+	
+	应用场景：通过java代码在excel中导入数据到数据库，批量删除
+	
+MVC和三层架构
+	M（model）：java bean 、实体类、数据载体
+	V（view）：JSP、数据展示
+	C（controller）：servlet、接收参数，调用数据操作，控制回到哪个页面
+	
+三层架构
+	数据访问层：
+		接收参数执行sql
+	业务层：
+		数据算法
+		计算规则
+		数据加工
+	控制器层：
+		接收参数，
+		调用业务层逻辑，
+		页面跳转
+		
+com.dao：数据data访问access对象object接口
+	userDao：与用户相关的数据库操作的接口
+com.dao.impl：数据data访问access对象object实现类
+	userDaoImpl:与用户相关的数据库操作的实现类
+	
+com.service：业务层接口
+	UserService:用户业务接口
+com.service.impl：业务层实现类
+	UserService:用户业务实现类
+	
+1.查询所有商品
+2.商品要根据当前是星期几来打几折
+
+步骤：
+	1.创建shopping表
+	2.创建表对应的实体
+	3.编写dao代码
+		select * from shopping
+	4.编写service代码
+		List<Shopping> sls = sd.queryShops();
+		//表示星期几
+		int xqj = 7;
+		//遍历数据
+		for (Shopping s : sls) {
+			//打折操作
+			s.setMoney(s.getMoney() * xqj / 10);
+		}
+		return sls;
+	5.编写页面代码调用业务逻辑
+	
